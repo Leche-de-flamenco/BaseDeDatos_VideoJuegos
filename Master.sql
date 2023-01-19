@@ -66,3 +66,131 @@ order by ReleaseDate;
 
 Select Nombre from juegos
 where Nombre like '%Final fantasy%';
+
+--12. Devuelve todos los juegos que sean de deportes y haya trabajado más de 3 desarrolladores.
+SELECT Nombre FROM juegos
+WHERE Genre like '%sports%' and DeveloperCount > 3;
+
+--13 ¿Cuántos juegos hay asociados a cada categoría?
+Select Genre, count(distinct Nombre) as 'Numero de juego' from juegos
+group by Genre;
+
+--14 ¿Cuántos juegos se han sacado en cada año?
+select ReleaseDate, count(Nombre) as 'Numero de juegos'from juegos
+group by ReleaseDate;
+
+--15 En base a la consulta anterior, devuelve aquellos años en los que la media de puntuación esté entre un 6 y un 8.
+SELECT ReleaseDate, AVG(Metacritic) as 'Valoracion media de la critica'
+FROM juegos
+GROUP BY ReleaseDate
+HAVING AVG(Metacritic) BETWEEN 6 and 8
+
+--16 ¿Cuál es la máxima, mínima y puntuación mínima por género?
+SELECT Genre, MAX(Metacritic) as 'Puntuacion maxima', MIN(Metacritic) as 'Puntuacion minima', 
+AVG(Metacritic) as 'Puntuacion media'
+FROM juegos
+GROUP BY Genre
+
+--17 Usando TOP, devuelve el top 10 de juegos con mayor puntuación del 2012.
+SELECT TOP 10 Nombre, Metacritic
+FROM juegos
+WHERE ReleaseDate = '2012'
+ORDER BY Metacritic DESC;
+
+--18 Devuelve el top 10 de juegos más nuevos de género single player.
+SELECT TOP 10 Nombre, Metacritic
+FROM juegos
+WHERE ReleaseDate = MAX(ReleaseDate)
+ORDER BY Metacritic DESC;
+
+--19 Devuelve la media de nota de todos aquellos juegos que sean para mayores de 18 años.
+SELECT AVG(Metacritic) as Media
+FROM juegos
+WHERE RequiredAge = '18';
+
+--20 ¿Cuántos juegos hay asociados a cada tipo (mayor de 18, de 17…)?
+SELECT RequiredAge, Count(Nombre) as 'Numero de juegos'
+FROM juegos
+GROUP BY RequiredAge
+order by RequiredAge asc;
+
+--21 Devuelve todos aquellos años en los que haya menos de 300 juegos.
+SELECT ReleaseDate
+FROM juegos
+GROUP BY ReleaseDate
+HAVING COUNT(Nombre) < 300;
+
+--22 Devuelve todos los juegos que estén para Mac pero no para Windows.
+SELECT Nombre
+FROM juegos
+WHERE PlatformMac = 'True' AND PlatformWindows = 'False';
+
+--23 Devuelve todos los juegos donde su precio final sea mayor a su precio inicial.
+SELECT Nombre
+FROM juegos
+WHERE PriceFinal > PriceInitial;
+
+--24 Devuelve todos los juegos que no estén valorados en dólares.
+SELECT Nombre
+FROM juegos
+WHERE PriceCurrency != 'USD';
+
+--25 Devuelve todos los juegos que tengan una mayor nota que 0, pero que hayan suspendido.
+SELECT Nombre
+FROM juegos
+WHERE Metacritic > 0 AND Metacritic < 50;
+
+--26 Devuelve el top 15 de juegos con mayor número de DLC.
+SELECT TOP 15 Nombre, DLCCount
+FROM juegos
+ORDER BY DLCCount DESC;
+
+--27 Devuelve la información de los juegos que sólo se puedan jugar en Inglés.
+SELECT *
+FROM juegos
+WHERE SupportedLanguages = 'English';
+
+--28 Devuelve el nombre(en minúscula) y la web (en mayúscula) de los juegos de acción o casuales.
+SELECT LOWER(Nombre) as Nombre, UPPER(website) as website
+FROM juegos
+WHERE Genre = ' Actio' OR Genre = ' Casual';
+
+--29 ¿Cuál es el juego indie con mayor nota?
+SELECT top 1 Metacritic, Nombre
+FROM juegos
+WHERE Genre like '%indie%';
+
+--30 ¿Y con menor nota?
+SELECT top 1 Metacritic, Nombre
+FROM juegos
+WHERE Genre like '%indie%'
+order by Metacritic asc;
+
+--31 Devuelve toda la información del juego con menor nota, siempre que sea mayor a cero.
+SELECT top 1 Metacritic
+FROM juegos
+WHERE Metacritic > 0
+ORDER BY Metacritic ASC;
+
+--32 Devuelve aquellos juegos que tengan mayor nota que la media.
+SELECT Nombre
+FROM juegos
+WHERE Metacritic > (SELECT AVG(Metacritic) FROM juegos);
+
+--33 Devuelve el juego con mayor nota del año 2008.
+SELECT top 1 Metacritic, Nombre
+FROM juegos
+WHERE ReleaseDate = '2008'
+ORDER BY Metacritic DESC;
+
+--34 Devuelve toda la información de los juegos que valgan más que la media.
+SELECT *
+FROM juegos
+WHERE PriceInitial > (SELECT AVG(PriceInitial) FROM juegos);
+
+--35 Devuelve toda la información de los juegos de Linux que tengan el mayor número de logros (achivements)
+SELECT *
+FROM juegos
+WHERE PlatformLinux = 'True'
+ORDER BY AchievementCount DESC
+
